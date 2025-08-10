@@ -23,7 +23,22 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
 
-app.use(cors({ origin: "https://mentplus.vercel.app", credentials: true }));
+const allowedOrigins = [
+  "https://mentplus.vercel.app",
+  "http://localhost:5173",
+  "https://mentplus-backend.onrender.com",
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 app.use(cookieParser()); 
 
